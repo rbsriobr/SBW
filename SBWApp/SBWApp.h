@@ -5,7 +5,6 @@
 	   All rights reserved
 */
 
-
 // SBWApp.h : main header file for the PROJECT_NAME application
 //
 
@@ -16,7 +15,6 @@
 #endif
 
 #include "resource.h"		// main symbols
-
 
 // CSBWAppApp:
 // See SBWApp.cpp for the implementation of this class
@@ -37,3 +35,4 @@ class CSBWAppApp : public CWinApp
 };
 
 extern CSBWAppApp theApp;
+

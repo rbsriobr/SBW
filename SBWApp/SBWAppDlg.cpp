@@ -579,8 +579,9 @@ void CSBWAppDlg::Reset ( )
 	ZeroMemory ( &m_bPrevious_Final_State_Ball, sizeof ( m_bPrevious_Final_State_Ball ) );
 
 	if ( m_hTimerQueue != NULL ) {
-		DeleteTimerQueue ( m_hTimerQueue );
-		m_hTimerQueue = NULL;
+		if ( DeleteTimerQueue ( m_hTimerQueue ) ) {
+			m_hTimerQueue = NULL;
+		}
 	}
 }
 
@@ -1368,27 +1369,34 @@ void CSBWAppDlg::CheckZeroBallState ( /*double dValue*/ )
 
 		FillArray (/* dValue,*/ iMov );
 
-		if ( !m_bNotAllowNewTimer[iMov] )
-			if ( !m_bCurrent_State_Ball[iMov] ) {
+		if ( !m_bNotAllowNewTimer[ iMov ] ) {
+			if ( !m_bCurrent_State_Ball[ iMov ] ) {
 
 				_sTimerQueue *psTimerQueue = new _sTimerQueue ( );
 
-				psTimerQueue->pThis       = this;
-				psTimerQueue->iMov        = iMov;
-				psTimerQueue->hTimer      = NULL;
+				psTimerQueue->pThis = this;
+				psTimerQueue->iMov = iMov;
+				psTimerQueue->hTimer = NULL;
 				psTimerQueue->hTimerQueue = m_hTimerQueue;
 
 				if ( m_hTimerQueue != NULL ) {
-					if ( CreateTimerQueueTimer ( & ( psTimerQueue->hTimer ),
-												 m_hTimerQueue,
-												 ( WAITORTIMERCALLBACK ) TimerRoutine,
-												 psTimerQueue,
-												 (int) m_ctrlTimValue.GetIValue ( ), //m_iPeriod,
-												 0, WT_EXECUTEONLYONCE ) != 0 ) {
-						m_bNotAllowNewTimer[iMov] = true;
+					if ( CreateTimerQueueTimer ( &( psTimerQueue->hTimer ),
+						m_hTimerQueue,
+						(WAITORTIMERCALLBACK) TimerRoutine,
+						psTimerQueue,
+						(int) m_ctrlTimValue.GetIValue ( ), //m_iPeriod,
+						0, WT_EXECUTEONLYONCE ) != 0 ) {
+						m_bNotAllowNewTimer[ iMov ] = true;
+					}
+					else {
+						delete psTimerQueue;
 					}
 				}
+				else {
+					delete psTimerQueue;
+				}
 			}
+		}
 	}
 }
 
@@ -1655,7 +1663,7 @@ LRESULT CSBWAppDlg::SendBallKeystrokes ( WPARAM queryitem )
 
 	if ( queryitem == -1 ) {
 		if ( wParam != 0 ) {
-			LPARAM lParam = ( LPARAM )this->m_hWnd;
+			LPARAM lParam = ( LPARAM )this->GetSafeHwnd ( )/*m_hWnd*/;
 
 			if ( ( IsWindow ( m_hTargetWindow ) == TRUE ) && ( m_ctrlBroadcast.GetCheck ( ) == BST_UNCHECKED ) ) {
 				::SendMessage ( m_hTargetWindow, WM_SBEXPLORER, wParam, lParam );
@@ -1808,7 +1816,7 @@ void CSBWAppDlg::Translate ( bool bDirection, SBW::_stProperties &stProp, _stUse
 		stUser.Threshold.sRY = m_clThreshold[ YROT ];
 		stUser.Threshold.sRZ = m_clThreshold[ ZROT ];
 		stUser.Operation.dFreq = m_ctrlFreq.GetDValue ( );
-		
+
 		//
 		stProp.dwSize = sizeof ( SBW::_stProperties );
 		//
@@ -2342,7 +2350,7 @@ void CSBWAppDlg::OnLoadSett ( )
 	ofn.nMaxFile = max ( MaximumComponentLength, MAX_PATH ) + 1;
 	ofn.lpstrFile = FileName.GetBuffer ( ofn.nMaxFile );
 	ofn.lpstrInitialDir = InitDir.GetBuffer ( ofn.nMaxFile );
-	SHGetSpecialFolderPath ( m_hWnd, ( LPWSTR ) ofn.lpstrInitialDir, CSIDL_DESKTOP, FALSE );
+	SHGetSpecialFolderPath ( GetSafeHwnd ( )/*m_hWnd*/, (LPWSTR) ofn.lpstrInitialDir, CSIDL_DESKTOP, FALSE );
 	ofn.lpstrFilter = _T ( "Profile\0*.sbcfg\0\0" );
 	ofn.nFilterIndex = 1;
 
@@ -2388,7 +2396,7 @@ void CSBWAppDlg::OnSaveSett ( )
 	ofn.nMaxFile = max ( MaximumComponentLength, MAX_PATH ) + 1;
 	ofn.lpstrFile = FileName.GetBuffer ( ofn.nMaxFile );
 	ofn.lpstrInitialDir = InitDir.GetBuffer ( ofn.nMaxFile );
-	SHGetSpecialFolderPath ( m_hWnd, ( LPWSTR ) ofn.lpstrInitialDir, CSIDL_DESKTOP, FALSE );
+	SHGetSpecialFolderPath ( GetSafeHwnd ( )/*m_hWnd*/, (LPWSTR) ofn.lpstrInitialDir, CSIDL_DESKTOP, FALSE );
 	ofn.lpstrFilter = _T ( "Profile\0*.sbcfg\0\0" );
 	ofn.nFilterIndex = 1;
 
@@ -2837,47 +2845,49 @@ void CSBWAppDlg::OnSetSignal ( )
 
 		default:
 			if ( m_iSignal != -1 ) {
-				DWORD dwSignal;
+				DWORD dwSignal = 0;
 
 				switch ( m_iSignal ) {
-					case 1:
-						dwSignal = CLRBREAK;
-						break;
+				case 1:
+					dwSignal = CLRBREAK;
+					break;
 
-					case 2:
-						dwSignal = SETBREAK;
-						break;
+				case 2:
+					dwSignal = SETBREAK;
+					break;
 
-					case 3:
-						dwSignal = CLRDTR;
-						break;
+				case 3:
+					dwSignal = CLRDTR;
+					break;
 
-					case 4:
-						dwSignal = SETDTR;
-						break;
+				case 4:
+					dwSignal = SETDTR;
+					break;
 
-					case 5:
-						dwSignal = CLRRTS;
-						break;
+				case 5:
+					dwSignal = CLRRTS;
+					break;
 
-					case 6:
-						dwSignal = SETRTS;
-						break;
+				case 6:
+					dwSignal = SETRTS;
+					break;
 
-					case 7:
-						dwSignal = SETXOFF;
-						break;
+				case 7:
+					dwSignal = SETXOFF;
+					break;
 
-					case 8:
-						dwSignal = SETXON;
-						break;
+				case 8:
+					dwSignal = SETXON;
+					break;
 
-					case 9:
-						dwSignal = RESETDEV;
+				case 9:
+					dwSignal = RESETDEV;
 				}
 
-				if ( !m_SBW.Signal ( dwSignal ) ) {
-					MessageBox ( m_clString[IDS_SETDEVNSUC], m_clString[IDS_ERROR2], MB_OK );
+				if ( dwSignal != 0 ) {
+					if ( !m_SBW.Signal ( dwSignal ) ) {
+					MessageBox ( m_clString[ IDS_SETDEVNSUC ], m_clString[ IDS_ERROR2 ], MB_OK );
+					}
 				}
 			}
 
@@ -3379,7 +3389,7 @@ void CSBWAppDlg::OnEnSetfocusStatusbar ( )
 
 BOOL CSBWAppDlg::OnSetCursor ( CWnd *pWnd, UINT nHitTest, UINT message )
 {
-	if ( m_ctrlStatusBar.m_hWnd == pWnd->m_hWnd ) {
+	if ( m_ctrlStatusBar.GetSafeHwnd ( )/*m_hWnd*/ == pWnd->GetSafeHwnd ( )/*m_hWnd*/ ) {
 		SetCursor ( AfxGetApp ( )->LoadStandardCursor ( IDC_ARROW ) );
 		return true;
 	}

@@ -30,6 +30,9 @@ CHexNumberProp::CHexNumberProp ( DWORD_PTR dwState, const CString &strName, __in
 	ASSERT ( m_MaxSeq.GetCount ( ) == m_MinSeq.GetCount ( ) );
 	CString Str;
 	Str.Format ( _T ( "%s%0*I64X" ), m_Prefix, ( m_MaxSeq.GetCount ( ) > 0 ) ? ( m_MaxSeq.GetCount ( ) * m_nWidth ) : m_nWidth, nValue );
+	//TCHAR  temp[ 128 ];
+	//_stprintf_s ( temp, 128, _T ( "%s%0*I64X" ), m_Prefix, ( m_MaxSeq.GetCount ( ) > 0 ) ? ( m_MaxSeq.GetCount ( ) * m_nWidth ) : m_nWidth, nValue );
+	//Str = temp;
 	m_varValue = /*SetValue (*/ Str /*)*/;
 }
 
