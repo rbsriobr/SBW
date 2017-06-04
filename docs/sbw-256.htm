@@ -1,0 +1,29 @@
+<!-- saved from url=(0014)about:internet -->
+<HTML>
+<BODY onload="adjust();">
+<br><br>
+<center>
+<OBJECT id="flashobj" CLASSID="clsid:D27CDB6E-AE6D-11cf-96B8-444553540000" WIDTH="1291" HEIGHT="731" CODEBASE="http://active.macromedia.com/flash5/cabs/swflash.cab#version=7,0,0,0">
+<param name=movie value="https://googledrive.com/host/0B8xO3-GRP1_TU0NtQ0hsVDMyWFk/sbw-256.swf">
+<PARAM NAME=play VALUE=true>
+<PARAM NAME=loop VALUE=true>
+<PARAM NAME=wmode VALUE=gpu>
+<PARAM NAME=quality VALUE=high>
+<PARAM NAME=scale VALUE=exactfit>
+<embed id="embededobj" src="https://googledrive.com/host/0B8xO3-GRP1_TU0NtQ0hsVDMyWFk/sbw-256.swf" width="1291" height="731" scale="exactfit" quality=high loop=true wmode=gpu type="application/x-shockwave-flash" pluginspage="http://www.macromedia.com/shockwave/download/index.cgi?P1_Prod_Version=ShockwaveFlash">
+</EMBED>
+</OBJECT>
+</center>
+<script src='https://googledrive.com/host/0B8xO3-GRP1_TU0NtQ0hsVDMyWFk/sbw-256.js'></script>
+<script>
+	function adjust() {
+		var w = document.getElementById("flashobj").getAttribute("WIDTH")/window.devicePixelRatio;
+		var h = document.getElementById("flashobj").getAttribute("HEIGHT")/window.devicePixelRatio;
+		document.getElementById("flashobj").setAttribute("WIDTH",w);
+		document.getElementById("flashobj").setAttribute("HEIGHT",h);
+		document.getElementById("embededobj").setAttribute("WIDTH",w);
+		document.getElementById("embededobj").setAttribute("HEIGHT",h);
+	}
+</script>
+</BODY>
+</HTML>
