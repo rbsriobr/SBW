@@ -4,3 +4,5 @@ This tool allows you to continue working with your old 6Dof device with serial (
 Tested devices:
 
 - Spaceball 5000
+
+ ![demo.jpeg](https://github.com/rbsriobr/SBW/blob/fa2fb69139af486f0539920cd5954f92aa6530f5/demo.jpeg?raw=true)
